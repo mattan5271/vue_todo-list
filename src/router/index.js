@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import SignUp from '../views/SignUp.vue';
 import SignIn from '../views/SignIn.vue';
+import Todos from '../views/Todos.vue';
 
 Vue.use(VueRouter);
 
@@ -21,6 +22,11 @@ const routes = [
     path: '/sign_in',
     name: 'SignIn',
     component: SignIn,
+  },
+  {
+    path: '/todos',
+    name: 'Todos',
+    component: Todos,
   },
 ];
 
