@@ -4,6 +4,7 @@ import Home from '../views/Home.vue';
 import SignUp from '../views/SignUp.vue';
 import SignIn from '../views/SignIn.vue';
 import Todos from '../views/Todos.vue';
+import EditTodo from '../views/EditTodo.vue';
 
 Vue.use(VueRouter);
 
@@ -27,6 +28,11 @@ const routes = [
     path: '/todos',
     name: 'Todos',
     component: Todos,
+  },
+  {
+    path: '/todo/:id?/edit',
+    name: 'EditTodo',
+    component: EditTodo,
   },
 ];
 

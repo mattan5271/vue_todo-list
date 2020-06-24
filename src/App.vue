@@ -24,6 +24,7 @@
 <script>
 import firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/firestore";
 import { mapGetters } from "vuex";
 import { mapActions } from "vuex";
 import SideNav from "./components/SideNav";
