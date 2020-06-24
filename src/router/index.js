@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import store from '../store';
 import Home from '../views/Home.vue';
 import SignUp from '../views/SignUp.vue';
 import SignIn from '../views/SignIn.vue';
 import Todos from '../views/Todos.vue';
-import EditTodo from '../views/EditTodo.vue';
 
 Vue.use(VueRouter);
 
@@ -18,21 +18,37 @@ const routes = [
     path: '/sign_up',
     name: 'SignUp',
     component: SignUp,
+    beforeEnter(to, from, next) {
+      if (store.state.login_user !== null) {
+        next({ name: 'Home' });
+      } else {
+        next();
+      }
+    },
   },
   {
     path: '/sign_in',
     name: 'SignIn',
     component: SignIn,
+    beforeEnter(to, from, next) {
+      if (store.state.login_user !== null) {
+        next({ name: 'Home' });
+      } else {
+        next();
+      }
+    },
   },
   {
     path: '/todos',
     name: 'Todos',
     component: Todos,
-  },
-  {
-    path: '/todo/:id?/edit',
-    name: 'EditTodo',
-    component: EditTodo,
+    beforeEnter(to, from, next) {
+      if (store.state.login_user === null) {
+        next({ name: 'SignIn' });
+      } else {
+        next();
+      }
+    },
   },
 ];
 

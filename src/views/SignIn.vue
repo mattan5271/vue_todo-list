@@ -2,15 +2,22 @@
   <v-row justify="center">
     <v-col cols="2"></v-col>
     <v-col cols="8">
-      <v-btn @click="googleLogin">Googleアカウントでログイン</v-btn>
+      <v-flex text-center>
+        <v-btn color="primary" @click="googleLogin">
+          <v-icon left>mdi-google</v-icon>Googleアカウントでログイン
+        </v-btn>
+      </v-flex>
+      <br />
 
       <v-text-field type="email" label="メールアドレス" v-model="$store.state.email"></v-text-field>
 
       <v-text-field type="password" label="パスワード" v-model="$store.state.password"></v-text-field>
 
-      <v-btn @click="signIn">
-        <v-icon left>mdi-login</v-icon>ログイン
-      </v-btn>
+      <v-flex text-center>
+        <v-btn color="error" @click="signIn">
+          <v-icon left>mdi-login</v-icon>ログイン
+        </v-btn>
+      </v-flex>
     </v-col>
     <v-col cols="2"></v-col>
   </v-row>

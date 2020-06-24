@@ -48,6 +48,10 @@ export default new Vuex.Store({
     toggleDrawer(state) {
       state.drawer = !state.drawer;
     },
+    addTodo() {
+      this.todosRef.add({ name: this.name, isDone: false });
+      this.name = '';
+    },
   },
   actions: {
     signUp({ commit }, user) {
@@ -77,6 +81,5 @@ export default new Vuex.Store({
   getters: {
     userName: (state) => (state.login_user ? state.login_user.displayName : ''),
     photoURL: (state) => (state.login_user ? state.login_user.photoURL : ''),
-    uid: (state) => (state.login_user ? state.login_user.uid : null),
   },
 });

@@ -3,7 +3,7 @@
     <v-col cols="4">
       <v-text-field type="text" label="タイトル" v-model="name" @keyup.enter="addTodo"></v-text-field>
 
-      <v-btn @click="addTodo">
+      <v-btn color="info" @click="addTodo">
         <v-icon left>mdi-note-plus</v-icon>追加
       </v-btn>
     </v-col>
@@ -23,19 +23,19 @@
               <input type="checkbox" v-model="todo.isDone" @click="updateIsDone(todo, key)" />
             </td>
             <td>
-              <div v-if="!edit">{{ todo.name }}</div>
+              <div v-if="!todo.edit">{{ todo.name }}</div>
               <span v-else>
                 <v-text-field
                   type="text"
                   autofocus
                   v-model="todo.name"
                   @keyup.enter="updateName(todo, key)"
-                  @blur="edit=false"
+                  @blur="todo.edit=false"
                 />
               </span>
             </td>
             <td>
-              <v-btn icon @click="edit=true">
+              <v-btn icon @click="todo.edit=true">
                 <v-icon>mdi-square-edit-outline</v-icon>
               </v-btn>
             </td>
@@ -54,34 +54,33 @@
 <script>
 import firebase from "firebase/app";
 import "firebase/firestore";
+import store from "../store";
 
 export default {
   created() {
-    this.db = firebase.firestore();
-    this.todosRef = this.db.collection("todos");
-    // this.todosRef.get().then(snapshot => {
-    //   snapshot.forEach(doc =>
-    //     this.todos.push({ id: doc.id, name: doc.data().name })
-    //   );
-    // });
-    this.todosRef.onSnapshot(querySnapshot => {
-      const obj = {};
-      querySnapshot.forEach(doc => {
-        obj[doc.id] = doc.data();
+    if (store.state.login_user !== null) {
+      this.db = firebase.firestore();
+      this.todosRef = this.db.collection("todos");
+      this.todosRef.onSnapshot(querySnapshot => {
+        const obj = {};
+        querySnapshot.forEach(doc => {
+          obj[doc.id] = doc.data();
+        });
+        this.todos = obj;
       });
-      this.todos = obj;
-    });
+    }
   },
   data() {
     return {
+      db: null,
+      todoRef: null,
       name: "",
-      todos: [],
-      edit: false
+      todos: []
     };
   },
   methods: {
     addTodo() {
-      this.todosRef.add({ name: this.name, isDone: false });
+      this.todosRef.add({ name: this.name, isDone: false, edit: false });
       this.name = "";
     },
     updateIsDone(todo, key) {
@@ -94,8 +93,8 @@ export default {
       }
     },
     updateName(todo, key) {
+      todo.edit = false;
       this.todosRef.doc(key).update(todo);
-      this.edit = false;
     }
   }
 };
