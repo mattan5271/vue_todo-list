@@ -62,9 +62,17 @@ export default new Vuex.Store({
     },
     setLoginUser(state, user) {
       state.login_user = user;
+      state.items[0].show = true;
+      state.items[1].show = false;
+      state.items[2].show = false;
+      state.items[3].show = true;
     },
     deleteLoginUser(state) {
       state.login_user = null;
+      state.items[0].show = false;
+      state.items[1].show = true;
+      state.items[2].show = true;
+      state.items[3].show = false;
     },
     toggleDrawer(state) {
       state.drawer = !state.drawer;
