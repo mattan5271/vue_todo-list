@@ -25,8 +25,9 @@
             <th />
           </tr>
         </thead>
-        <tbody v-for="(todo, key) in todos" :key="key">
-          <tr>
+
+        <draggable :options="options" :element="'tbody'">
+          <tr v-for="(todo, key) in todos" :key="key">
             <td>
               <input
                 type="checkbox"
@@ -34,7 +35,7 @@
                 @click="updateIsDone(todo, key)"
               />
             </td>
-            <td>
+            <td class="todo">
               <div v-if="!todo.edit" :class="{ done: todo.isDone }">
                 {{ todo.name }}
               </div>
@@ -59,7 +60,7 @@
               </v-btn>
             </td>
           </tr>
-        </tbody>
+        </draggable>
       </v-simple-table>
       <br />
 
@@ -76,6 +77,7 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import store from '../store';
+import draggable from 'vuedraggable';
 
 export default {
   created() {
@@ -97,6 +99,9 @@ export default {
       todoRef: null,
       name: '',
       todos: [],
+      options: {
+        animation: 200,
+      },
     };
   },
   methods: {
@@ -138,11 +143,20 @@ export default {
       this.addTodo();
     },
   },
+  components: {
+    draggable,
+  },
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .done {
   text-decoration: line-through;
+}
+.todo:hover {
+  cursor: grab;
+}
+.todo:active {
+  cursor: grabbing;
 }
 </style>
