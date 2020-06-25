@@ -12,11 +12,13 @@
         </v-list-item>
 
         <v-divider></v-divider>
+
         <v-list-item
-          v-for="(item, i) in items"
+          v-for="(item, i) in $store.state.items"
           :key="i"
           :to="item.link"
           @click="signOut(item.text)"
+          v-show="item.show"
         >
           <v-list-item-icon>
             <v-icon v-text="item.icon"></v-icon>
@@ -33,25 +35,10 @@
 <script>
 import firebase from "firebase/app";
 import "firebase/auth";
+import store from "../store";
 import { mapGetters } from "vuex";
-import { mapActions } from "vuex";
 
 export default {
-  data() {
-    return {
-      items: [
-        { text: "ホーム", icon: "mdi-home", link: { name: "Home" } },
-        { text: "TODO管理", icon: "mdi-menu", link: { name: "Todos" } },
-        {
-          text: "新規会員登録",
-          icon: "mdi-account-plus",
-          link: { name: "SignUp" }
-        },
-        { text: "ログイン", icon: "mdi-login", link: { name: "SignIn" } },
-        { text: "ログアウト", icon: "mdi-logout" }
-      ]
-    };
-  },
   computed: {
     ...mapGetters(["userName", "photoURL"])
   },

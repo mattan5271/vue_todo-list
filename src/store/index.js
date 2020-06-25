@@ -12,6 +12,33 @@ export default new Vuex.Store({
     password: '',
     login_user: null,
     drawer: false,
+    items: [
+      {
+        text: 'ホーム',
+        icon: 'mdi-home',
+        link: { name: 'Home' },
+        show: true,
+      },
+      {
+        text: 'TODO管理',
+        icon: 'mdi-menu',
+        link: { name: 'Todos' },
+        show: false,
+      },
+      {
+        text: '新規会員登録',
+        icon: 'mdi-account-plus',
+        link: { name: 'SignUp' },
+        show: true,
+      },
+      {
+        text: 'ログイン',
+        icon: 'mdi-login',
+        link: { name: 'SignIn' },
+        show: true,
+      },
+      { text: 'ログアウト', icon: 'mdi-logout', show: false },
+    ],
   },
   mutations: {
     signUp(state) {
@@ -48,6 +75,11 @@ export default new Vuex.Store({
     toggleDrawer(state) {
       state.drawer = !state.drawer;
     },
+    toggleListItem(state) {
+      state.items.forEach((item) => {
+        item.show = !item.show;
+      });
+    },
     addTodo() {
       this.todosRef.add({ name: this.name, isDone: false });
       this.name = '';
@@ -76,6 +108,9 @@ export default new Vuex.Store({
     },
     toggleDrawer({ commit }) {
       commit('toggleDrawer');
+    },
+    toggleListItem({ commit }) {
+      commit('toggleListItem');
     },
   },
   getters: {

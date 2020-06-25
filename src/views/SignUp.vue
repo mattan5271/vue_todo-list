@@ -10,7 +10,6 @@
       <br />
 
       <v-text-field type="email" label="メールアドレス" v-model="$store.state.email"></v-text-field>
-      <p>{{ $store.state.email }}</p>
 
       <v-text-field type="password" label="パスワード" v-model="$store.state.password"></v-text-field>
 

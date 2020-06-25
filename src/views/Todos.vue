@@ -1,12 +1,14 @@
 <template>
   <v-row justify="center">
     <v-col cols="4">
-      <v-text-field type="text" label="タイトル" v-model="name" @keyup.enter="addTodo"></v-text-field>
-
-      <v-btn color="info" @click="addTodo">
-        <v-icon left>mdi-note-plus</v-icon>追加
-      </v-btn>
+      <v-text-field type="text" label="タイトル" autofocus v-model="name" @keydown.enter="trigger" />
+      <v-flex text-right>
+        <v-btn color="info" @click="addTodo">
+          <v-icon left>mdi-note-plus</v-icon>追加
+        </v-btn>
+      </v-flex>
     </v-col>
+
     <v-col cols="8">
       <v-simple-table>
         <thead>
@@ -47,6 +49,13 @@
           </tr>
         </tbody>
       </v-simple-table>
+      <br />
+
+      <v-flex text-right>
+        <v-btn color="error" @click="deleteAllTodo">
+          <v-icon left>mdi-trash-can-outline</v-icon>全削除
+        </v-btn>
+      </v-flex>
     </v-col>
   </v-row>
 </template>
@@ -80,11 +89,19 @@ export default {
   },
   methods: {
     addTodo() {
-      this.todosRef.add({ name: this.name, isDone: false, edit: false });
-      this.name = "";
+      if (this.name) {
+        this.todosRef.add({ name: this.name, isDone: false, edit: false });
+        this.name = "";
+      } else {
+        alert("タイトルを入力してください。");
+      }
     },
     updateIsDone(todo, key) {
       todo.isDone = !todo.isDone;
+      this.todosRef.doc(key).update(todo);
+    },
+    updateName(todo, key) {
+      todo.edit = false;
       this.todosRef.doc(key).update(todo);
     },
     deleteTodo(key) {
@@ -92,9 +109,21 @@ export default {
         this.todosRef.doc(key).delete();
       }
     },
-    updateName(todo, key) {
-      todo.edit = false;
-      this.todosRef.doc(key).update(todo);
+    deleteAllTodo() {
+      if (Object.keys(this.todos).length !== 0) {
+        if (confirm("本当に削除しますか？")) {
+          Object.keys(this.todos).forEach(todo => {
+            this.todosRef.doc(todo).delete();
+          });
+        }
+      } else {
+        alert("Todoが存在しません。");
+      }
+    },
+    trigger(event) {
+      // 日本語入力中のEnterキー操作は無効にする
+      if (event.keyCode !== 13) return;
+      this.addTodo();
     }
   }
 };

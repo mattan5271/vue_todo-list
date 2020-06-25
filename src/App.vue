@@ -31,10 +31,16 @@ export default {
       } else {
         this.deleteLoginUser();
       }
+      this.toggleListItem();
     });
   },
   methods: {
-    ...mapActions(["setLoginUser", "deleteLoginUser", "toggleDrawer"])
+    ...mapActions([
+      "setLoginUser",
+      "deleteLoginUser",
+      "toggleDrawer",
+      "toggleListItem"
+    ])
   },
   components: {
     SideNav
