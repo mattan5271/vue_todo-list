@@ -9,7 +9,7 @@
       </v-app-bar>
     </div>
     <v-main>
-      <v-container>
+      <v-container fluid>
         <SideNav />
         <router-view />
       </v-container>
