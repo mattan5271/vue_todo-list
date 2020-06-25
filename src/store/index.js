@@ -14,12 +14,6 @@ export default new Vuex.Store({
     drawer: false,
     items: [
       {
-        text: 'ホーム',
-        icon: 'mdi-home',
-        link: { name: 'Home' },
-        show: true,
-      },
-      {
         text: 'TODO管理',
         icon: 'mdi-menu',
         link: { name: 'Todos' },

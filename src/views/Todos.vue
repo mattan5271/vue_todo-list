@@ -1,7 +1,13 @@
 <template>
   <v-row justify="center">
     <v-col cols="4">
-      <v-text-field type="text" label="タイトル" autofocus v-model="name" @keydown.enter="trigger" />
+      <v-text-field
+        type="text"
+        label="タイトル"
+        autofocus
+        v-model="name"
+        @keydown.enter="trigger"
+      />
       <v-flex text-right>
         <v-btn color="info" @click="addTodo">
           <v-icon left>mdi-note-plus</v-icon>追加
@@ -22,22 +28,28 @@
         <tbody v-for="(todo, key) in todos" :key="key">
           <tr>
             <td>
-              <input type="checkbox" v-model="todo.isDone" @click="updateIsDone(todo, key)" />
+              <input
+                type="checkbox"
+                v-model="todo.isDone"
+                @click="updateIsDone(todo, key)"
+              />
             </td>
             <td>
-              <div v-if="!todo.edit">{{ todo.name }}</div>
+              <div v-if="!todo.edit" :class="{ done: todo.isDone }">
+                {{ todo.name }}
+              </div>
               <span v-else>
                 <v-text-field
                   type="text"
                   autofocus
                   v-model="todo.name"
                   @keyup.enter="updateName(todo, key)"
-                  @blur="todo.edit=false"
+                  @blur="todo.edit = false"
                 />
               </span>
             </td>
             <td>
-              <v-btn icon @click="todo.edit=true">
+              <v-btn icon @click="todo.edit = true">
                 <v-icon>mdi-square-edit-outline</v-icon>
               </v-btn>
             </td>
@@ -61,18 +73,18 @@
 </template>
 
 <script>
-import firebase from "firebase/app";
-import "firebase/firestore";
-import store from "../store";
+import firebase from 'firebase/app';
+import 'firebase/firestore';
+import store from '../store';
 
 export default {
   created() {
     if (store.state.login_user !== null) {
       this.db = firebase.firestore();
-      this.todosRef = this.db.collection("todos");
-      this.todosRef.onSnapshot(querySnapshot => {
+      this.todosRef = this.db.collection('todos');
+      this.todosRef.onSnapshot((querySnapshot) => {
         const obj = {};
-        querySnapshot.forEach(doc => {
+        querySnapshot.forEach((doc) => {
           obj[doc.id] = doc.data();
         });
         this.todos = obj;
@@ -83,17 +95,17 @@ export default {
     return {
       db: null,
       todoRef: null,
-      name: "",
-      todos: []
+      name: '',
+      todos: [],
     };
   },
   methods: {
     addTodo() {
       if (this.name) {
         this.todosRef.add({ name: this.name, isDone: false, edit: false });
-        this.name = "";
+        this.name = '';
       } else {
-        alert("タイトルを入力してください。");
+        alert('タイトルを入力してください。');
       }
     },
     updateIsDone(todo, key) {
@@ -105,26 +117,32 @@ export default {
       this.todosRef.doc(key).update(todo);
     },
     deleteTodo(key) {
-      if (confirm("本当に削除しますか？")) {
+      if (confirm('本当に削除しますか？')) {
         this.todosRef.doc(key).delete();
       }
     },
     deleteAllTodo() {
       if (Object.keys(this.todos).length !== 0) {
-        if (confirm("本当に削除しますか？")) {
-          Object.keys(this.todos).forEach(todo => {
+        if (confirm('本当に削除しますか？')) {
+          Object.keys(this.todos).forEach((todo) => {
             this.todosRef.doc(todo).delete();
           });
         }
       } else {
-        alert("Todoが存在しません。");
+        alert('Todoが存在しません。');
       }
     },
     trigger(event) {
       // 日本語入力中のEnterキー操作は無効にする
       if (event.keyCode !== 13) return;
       this.addTodo();
-    }
-  }
+    },
+  },
 };
 </script>
+
+<style lang="scss">
+.done {
+  text-decoration: line-through;
+}
+</style>
