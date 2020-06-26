@@ -8,6 +8,8 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    db: null,
+    todoRef: null,
     email: '',
     password: '',
     login_user: null,
@@ -42,6 +44,9 @@ export default new Vuex.Store({
         .createUserWithEmailAndPassword(state.email, state.password)
         .then((user) => {
           alert('Sign Up: ', user.email);
+          this.db = firebase.firestore();
+          this.todosRef = this.db.collection('users');
+          this.todosRef.add({ email: state.email, password: state.password });
         })
         .catch((error) => {
           alert(error.message);
@@ -77,15 +82,6 @@ export default new Vuex.Store({
     toggleDrawer(state) {
       state.drawer = !state.drawer;
     },
-    toggleListItem(state) {
-      state.items.forEach((item) => {
-        item.show = !item.show;
-      });
-    },
-    addTodo() {
-      this.todosRef.add({ name: this.name, isDone: false });
-      this.name = '';
-    },
   },
   actions: {
     signUp({ commit }, user) {
@@ -100,7 +96,6 @@ export default new Vuex.Store({
     googleLogin() {
       const google_auth_provider = new firebase.auth.GoogleAuthProvider();
       firebase.auth().signInWithRedirect(google_auth_provider);
-      this.setLoginUser();
     },
     setLoginUser({ commit }, user) {
       commit('setLoginUser', user);
@@ -110,9 +105,6 @@ export default new Vuex.Store({
     },
     toggleDrawer({ commit }) {
       commit('toggleDrawer');
-    },
-    toggleListItem({ commit }) {
-      commit('toggleListItem');
     },
   },
   getters: {

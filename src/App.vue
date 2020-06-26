@@ -28,11 +28,11 @@ export default {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.setLoginUser(user);
-        this.$router.push("/");
+        this.$router.push({ name: "Todos" });
       } else {
         this.deleteLoginUser();
+        this.$router.push({ name: "SignIn" });
       }
-      // this.toggleListItem();
     });
   },
   methods: {

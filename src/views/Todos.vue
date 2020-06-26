@@ -1,13 +1,7 @@
 <template>
   <v-row justify="center">
     <v-col cols="4">
-      <v-text-field
-        type="text"
-        label="タイトル"
-        autofocus
-        v-model="name"
-        @keydown.enter="trigger"
-      />
+      <v-text-field type="text" label="タイトル" autofocus v-model="name" @keydown.enter="trigger" />
       <v-flex text-right>
         <v-btn color="info" @click="addTodo">
           <v-icon left>mdi-note-plus</v-icon>追加
@@ -26,19 +20,13 @@
           </tr>
         </thead>
 
-        <draggable :options="options" :element="'tbody'">
+        <draggable tag="tbody">
           <tr v-for="(todo, key) in todos" :key="key">
             <td>
-              <input
-                type="checkbox"
-                v-model="todo.isDone"
-                @click="updateIsDone(todo, key)"
-              />
+              <input type="checkbox" v-model="todo.isDone" @click="updateIsDone(todo, key)" />
             </td>
             <td class="todo">
-              <div v-if="!todo.edit" :class="{ done: todo.isDone }">
-                {{ todo.name }}
-              </div>
+              <div v-if="!todo.edit" :class="{ done: todo.isDone }">{{ todo.name }}</div>
               <span v-else>
                 <v-text-field
                   type="text"
@@ -74,78 +62,70 @@
 </template>
 
 <script>
-import firebase from 'firebase/app';
-import 'firebase/firestore';
-import store from '../store';
-import draggable from 'vuedraggable';
+import store from "../store";
+import firebase from "firebase/app";
+import "firebase/firestore";
+import { todosRef } from "../plugins/firebase";
+import draggable from "vuedraggable";
 
 export default {
   created() {
-    if (store.state.login_user !== null) {
-      this.db = firebase.firestore();
-      this.todosRef = this.db.collection('todos');
-      this.todosRef.onSnapshot((querySnapshot) => {
-        const obj = {};
-        querySnapshot.forEach((doc) => {
-          obj[doc.id] = doc.data();
-        });
-        this.todos = obj;
+    todosRef.onSnapshot(querySnapshot => {
+      let obj = {};
+      querySnapshot.forEach(doc => {
+        obj[doc.id] = doc.data();
       });
-    }
+      this.todos = obj;
+    });
   },
   data() {
     return {
-      db: null,
-      todoRef: null,
-      name: '',
-      todos: [],
-      options: {
-        animation: 200,
-      },
+      name: "",
+      todos: []
     };
   },
   methods: {
     addTodo() {
       if (this.name) {
-        this.todosRef.add({ name: this.name, isDone: false, edit: false });
-        this.name = '';
+        todosRef.add({ name: this.name, isDone: false, edit: false });
+        this.name = "";
       } else {
-        alert('タイトルを入力してください。');
+        alert("タイトルを入力してください。");
       }
     },
     updateIsDone(todo, key) {
       todo.isDone = !todo.isDone;
-      this.todosRef.doc(key).update(todo);
+      todosRef.doc(key).update(todo);
     },
     updateName(todo, key) {
       todo.edit = false;
-      this.todosRef.doc(key).update(todo);
+      todosRef.doc(key).update(todo);
     },
     deleteTodo(key) {
-      if (confirm('本当に削除しますか？')) {
-        this.todosRef.doc(key).delete();
+      if (confirm("本当に削除しますか？")) {
+        todosRef.doc(key).delete();
       }
     },
     deleteAllTodo() {
       if (Object.keys(this.todos).length !== 0) {
-        if (confirm('本当に削除しますか？')) {
-          Object.keys(this.todos).forEach((todo) => {
-            this.todosRef.doc(todo).delete();
+        if (confirm("本当に削除しますか？")) {
+          Object.keys(this.todos).forEach(todo => {
+            todosRef.doc(todo).delete();
           });
         }
       } else {
-        alert('Todoが存在しません。');
+        alert("Todoが存在しません。");
       }
     },
     trigger(event) {
       // 日本語入力中のEnterキー操作は無効にする
       if (event.keyCode !== 13) return;
       this.addTodo();
-    },
+    }
   },
   components: {
-    draggable,
-  },
+    draggable
+  }
 };
 </script>
 

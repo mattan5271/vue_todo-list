@@ -18,37 +18,16 @@ const routes = [
     path: '/sign_up',
     name: 'SignUp',
     component: SignUp,
-    beforeEnter(to, from, next) {
-      if (store.state.login_user !== null) {
-        next({ name: 'Home' });
-      } else {
-        next();
-      }
-    },
   },
   {
     path: '/sign_in',
     name: 'SignIn',
     component: SignIn,
-    beforeEnter(to, from, next) {
-      if (store.state.login_user !== null) {
-        next({ name: 'Home' });
-      } else {
-        next();
-      }
-    },
   },
   {
     path: '/todos',
     name: 'Todos',
     component: Todos,
-    beforeEnter(to, from, next) {
-      if (store.state.login_user === null) {
-        next({ name: 'SignIn' });
-      } else {
-        next();
-      }
-    },
   },
 ];
 
