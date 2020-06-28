@@ -21,7 +21,7 @@
         </thead>
 
         <draggable tag="tbody">
-          <tr v-for="(todo, key) in todos" :key="key">
+          <tr v-for="(todo, key) in $store.state.todos" :key="key">
             <td>
               <input type="checkbox" v-model="todo.isDone" @click="updateIsDone(todo, key)" />
             </td>
@@ -63,31 +63,27 @@
 
 <script>
 import store from "../store";
-import firebase from "firebase/app";
+import firebase, { firestore } from "firebase/app";
 import "firebase/firestore";
-import { todosRef } from "../plugins/firebase";
+import "firebase/auth";
+import { todosRef } from "../main";
 import draggable from "vuedraggable";
 
 export default {
-  created() {
-    todosRef.onSnapshot(querySnapshot => {
-      let obj = {};
-      querySnapshot.forEach(doc => {
-        obj[doc.id] = doc.data();
-      });
-      this.todos = obj;
-    });
-  },
   data() {
     return {
-      name: "",
-      todos: []
+      name: ""
     };
   },
   methods: {
     addTodo() {
       if (this.name) {
-        todosRef.add({ name: this.name, isDone: false, edit: false });
+        todosRef.add({
+          user_id: firebase.auth().currentUser.uid,
+          name: this.name,
+          isDone: false,
+          edit: false
+        });
         this.name = "";
       } else {
         alert("タイトルを入力してください。");
@@ -107,9 +103,9 @@ export default {
       }
     },
     deleteAllTodo() {
-      if (Object.keys(this.todos).length !== 0) {
+      if (Object.keys(store.state.todos).length !== 0) {
         if (confirm("本当に削除しますか？")) {
-          Object.keys(this.todos).forEach(todo => {
+          Object.keys(store.state.todos).forEach(todo => {
             todosRef.doc(todo).delete();
           });
         }

@@ -17,6 +17,12 @@
         <v-btn color="error" @click="signIn">
           <v-icon left>mdi-login</v-icon>ログイン
         </v-btn>
+        <br />
+        <br />
+
+        <v-btn color="success" :to="{ name: 'SignUp' }">
+          <v-icon left>mdi-account-plus</v-icon>新規会員登録はこちらから
+        </v-btn>
       </v-flex>
     </v-col>
     <v-col cols="2"></v-col>

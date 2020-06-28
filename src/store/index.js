@@ -8,12 +8,11 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    db: null,
-    todoRef: null,
     email: '',
     password: '',
     login_user: null,
     drawer: false,
+    todos: [],
     items: [
       {
         text: 'TODO管理',
@@ -37,28 +36,13 @@ export default new Vuex.Store({
     ],
   },
   mutations: {
-    signUp(state) {
-      console.log(state.email);
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(state.email, state.password)
-        .then((user) => {
-          alert('Sign Up: ', user.email);
-          this.db = firebase.firestore();
-          this.todosRef = this.db.collection('users');
-          this.todosRef.add({ email: state.email, password: state.password });
-        })
-        .catch((error) => {
-          alert(error.message);
-        });
-    },
     signIn(state) {
       firebase
         .auth()
         .signInWithEmailAndPassword(state.email, state.password)
         .then(
           (user) => {
-            alert('Sign In');
+            alert('Login successful');
           },
           (error) => {
             alert(error.message);
@@ -67,6 +51,19 @@ export default new Vuex.Store({
     },
     setLoginUser(state, user) {
       state.login_user = user;
+      if (state.login_user.uid) {
+        firebase
+          .firestore()
+          .collection('todos')
+          .where('user_id', '==', state.login_user.uid)
+          .onSnapshot((querySnapshot) => {
+            let obj = {};
+            querySnapshot.forEach((doc) => {
+              obj[doc.id] = doc.data();
+            });
+            state.todos = obj;
+          });
+      }
       state.items[0].show = true;
       state.items[1].show = false;
       state.items[2].show = false;

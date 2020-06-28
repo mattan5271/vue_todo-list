@@ -33,22 +33,21 @@
 </template>
 
 <script>
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import store from '../store';
-import { mapGetters } from 'vuex';
+import firebase from "firebase/app";
+import "firebase/auth";
+import { mapGetters } from "vuex";
 
 export default {
   computed: {
-    ...mapGetters(['userName', 'photoURL']),
+    ...mapGetters(["userName", "photoURL"])
   },
   methods: {
     signOut(name) {
-      if (name === 'ログアウト') {
+      if (name === "ログアウト") {
         firebase.auth().signOut();
-        this.$router.push('/');
+        this.$router.push("/");
       }
-    },
-  },
+    }
+  }
 };
 </script>
