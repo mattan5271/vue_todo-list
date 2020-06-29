@@ -18,7 +18,6 @@
 <script>
 import firebase from "firebase/app";
 import "firebase/auth";
-import "firebase/firestore";
 import { mapActions } from "vuex";
 import SideNav from "./components/SideNav";
 
@@ -28,20 +27,13 @@ export default {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.setLoginUser(user);
-        this.$router.push({ name: "Todos" });
       } else {
         this.deleteLoginUser();
-        this.$router.push({ name: "SignIn" });
       }
     });
   },
   methods: {
-    ...mapActions([
-      "setLoginUser",
-      "deleteLoginUser",
-      "toggleDrawer",
-      "toggleListItem"
-    ])
+    ...mapActions(["setLoginUser", "deleteLoginUser", "toggleDrawer"])
   },
   components: {
     SideNav

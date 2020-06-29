@@ -63,10 +63,9 @@
 
 <script>
 import store from "../store";
-import firebase, { firestore } from "firebase/app";
+import firebase from "firebase/app";
 import "firebase/firestore";
-import "firebase/auth";
-import { todosRef } from "../main";
+import { todosRef } from "../plugins/firebase";
 import draggable from "vuedraggable";
 
 export default {
@@ -79,7 +78,7 @@ export default {
     addTodo() {
       if (this.name) {
         todosRef.add({
-          user_id: firebase.auth().currentUser.uid,
+          user_id: store.state.login_user.uid,
           name: this.name,
           isDone: false,
           edit: false

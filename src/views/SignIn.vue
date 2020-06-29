@@ -9,9 +9,9 @@
       </v-flex>
       <br />
 
-      <v-text-field type="email" label="メールアドレス" v-model="$store.state.email"></v-text-field>
+      <v-text-field type="email" label="メールアドレス" autofocus v-model="email"></v-text-field>
 
-      <v-text-field type="password" label="パスワード" v-model="$store.state.password"></v-text-field>
+      <v-text-field type="password" label="パスワード" v-model="password"></v-text-field>
 
       <v-flex text-center>
         <v-btn color="error" @click="signIn">
@@ -30,11 +30,33 @@
 </template>
 
 <script>
+import firebase from "firebase/app";
+import "firebase/auth";
 import { mapActions } from "vuex";
 
 export default {
+  data() {
+    return {
+      email: "",
+      password: ""
+    };
+  },
   methods: {
-    ...mapActions(["signIn", "googleLogin"])
+    signIn() {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(this.email, this.password)
+        .then(response => {
+          console.log(response);
+          this.$router.push({ name: "Todos" });
+          this.email = "";
+          this.password = "";
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    ...mapActions(["googleLogin"])
   }
 };
 </script>

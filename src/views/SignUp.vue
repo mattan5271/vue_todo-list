@@ -9,6 +9,8 @@
       </v-flex>
       <br />
 
+      <v-text-field type="text" label="氏名" autofocus v-model="name"></v-text-field>
+
       <v-text-field type="email" label="メールアドレス" v-model="email"></v-text-field>
 
       <v-text-field type="password" label="パスワード" v-model="password"></v-text-field>
@@ -32,12 +34,12 @@
 <script>
 import firebase from "firebase/app";
 import "firebase/auth";
-import "firebase/firestore";
 import { mapActions } from "vuex";
 
 export default {
   data() {
     return {
+      name: "",
       email: "",
       password: ""
     };
@@ -48,22 +50,17 @@ export default {
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
         .then(response => {
-          const user = response.user;
-          console.log(user.uid);
-          firebase
-            .firestore()
-            .collection("users")
-            .doc(user.uid)
-            .set({
-              user_id: user.uid,
-              email: user.email
-            })
-            .then(() => {
-              this.$router.push("/");
-            })
-            .catch(e => {
-              console.log(e);
-            });
+          console.log(response);
+          response.user.updateProfile({
+            displayName: this.name
+          });
+          this.$router.push({ name: "Todos" });
+          this.name = "";
+          this.email = "";
+          this.password = "";
+        })
+        .catch(error => {
+          console.log(error);
         });
     },
     ...mapActions(["googleLogin"])
